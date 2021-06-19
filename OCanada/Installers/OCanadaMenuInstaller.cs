@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OCanada.UI.ViewControllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace OCanada.Installers
     {
         public override void InstallBindings()
         {
+            Container.BindInterfacesTo<OCanadaGameController>().AsSingle();
         }
     }
 }

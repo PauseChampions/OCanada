@@ -1,0 +1,19 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+  <vertical horizontal-fit='PreferredSize' pref-width='80'>
+    <horizontal spacing='10'>
+      <button text='⏸' italics='false'/>
+      <text text='username'/>
+      <vertical>
+        <text text='Score'/>
+        <text text='Hi Score'/>
+      </vertical>
+    </horizontal>
+ 
+    <grid cell-size-y='10' cell-size-x='11' spacing-x='2' spacing-y='2' align='Center'>
+      <macro.for-each items='clickable-images'>
+        <clickable-image/>
+      </macro.for-each>
+    </grid>
+
+  </vertical>
+</bg>
