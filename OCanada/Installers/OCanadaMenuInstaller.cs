@@ -12,7 +12,7 @@ namespace OCanada.Installers
     {
         public override void InstallBindings()
         {
-            Container.BindInterfacesTo<OCanadaGameController>().AsSingle();
+            Container.BindInterfacesTo<OCanadaMenuController>().AsSingle();
         }
     }
 }
