@@ -1,4 +1,4 @@
-﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+﻿<bg id='root' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
   
   <vertical pad-bottom='45'>
     <text text='O Canada 🍁' font-size='8.5' align='Center' color='#ff7474'/>
@@ -6,7 +6,7 @@
   </vertical>
   
   <vertical vertical-fit='PreferredSize' horizontal-fit='PreferredSize' pad-top='10'>
-    <list id='list' pref-width='22' pref-height='30' list-style='Simple' italics='false'/>
+    <list id='list' pref-width='22' pref-height='30' list-style='Simple' select-cell='funny-selected'/>
   </vertical>
 
 </bg>

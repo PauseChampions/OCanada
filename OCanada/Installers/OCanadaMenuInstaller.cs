@@ -13,6 +13,7 @@ namespace OCanada.Installers
         public override void InstallBindings()
         {
             Container.BindInterfacesTo<OCanadaMenuController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<OCanadaDetailsController>().AsSingle();
         }
     }
 }
