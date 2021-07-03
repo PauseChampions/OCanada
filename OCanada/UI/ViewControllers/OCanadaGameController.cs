@@ -14,6 +14,7 @@ namespace OCanada.UI
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private bool parsed;
+        private Mode selectedMode;
 
         [UIComponent("root")]
         private readonly RectTransform rootTransform;
@@ -27,6 +28,7 @@ namespace OCanada.UI
         public void Initialize()
         {
             parsed = false;
+            selectedMode = Mode.None;
         }
 
         private void Parse(RectTransform siblingTranform)
@@ -39,9 +41,10 @@ namespace OCanada.UI
             rootTransform.SetParent(siblingTranform.parent);
         }
 
-        internal void StartGame(RectTransform siblingTransform)
+        internal void StartGame(RectTransform siblingTransform, Mode selectedMode)
         {
             Parse(siblingTransform);
+            this.selectedMode = selectedMode;
             FlagImage flagImage = new FlagImage("OCanada.Images.Canada.png");
             flagImage.SpriteLoaded += FlagImage_SpriteLoaded;
             _ = flagImage.Sprite;

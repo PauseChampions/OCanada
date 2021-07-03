@@ -40,9 +40,9 @@ namespace OCanada.UI
             oCanadaDetailsController.PlayClicked -= OCanadaDetailsController_PlayClicked;
         }
 
-        private void OCanadaDetailsController_PlayClicked()
+        private void OCanadaDetailsController_PlayClicked(Mode selectedMode)
         {
-            oCanadaGameController.StartGame(rootTransform);
+            oCanadaGameController.StartGame(rootTransform, selectedMode);
             rootTransform.gameObject.SetActive(false);
         }
 
@@ -60,7 +60,7 @@ namespace OCanada.UI
         private void FunnySelected(TableView tableView, int index)
         {
             customListTableData.tableView.ClearSelection();
-            oCanadaDetailsController.ShowModal(rootTransform);
+            oCanadaDetailsController.ShowModal(rootTransform, index);
         }
     }
 }
