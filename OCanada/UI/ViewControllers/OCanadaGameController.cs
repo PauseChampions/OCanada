@@ -2,19 +2,23 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-
+using System.Reflection;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.GameplaySetup;
-using BeatSaberMarkupLanguage.ViewControllers;
+using UnityEngine;
 using Zenject;
 
-namespace OCanada.UI.ViewControllers
+namespace OCanada.UI
 {
-    internal class OCanadaGameController : IInitializable, IDisposable, INotifyPropertyChanged
+    internal class OCanadaGameController : IInitializable, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        private bool parsed;
+
+        [UIComponent("root")]
+        private readonly RectTransform rootTransform;
 
         [UIValue("clickable-images")]
         private List<object> clickableImages = Enumerable.Range(1, 24).Select(i =>
@@ -23,13 +27,22 @@ namespace OCanada.UI.ViewControllers
         }).ToList();
         public void Initialize()
         {
-            GameplaySetup.instance.AddTab("O Canada", "OCanada.UI.Views.OCanadaGame.bsml", this);
+            parsed = false;
         }
 
-        public void Dispose()
+        private void Parse(RectTransform siblingTranform)
         {
-            GameplaySetup.instance?.RemoveTab("O Canada");
+            if (!parsed)
+            {
+                BSMLParser.instance.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "OCanada.UI.Views.OCanadaGame.bsml"), siblingTranform.parent.gameObject, this);
+                parsed = true;
+            }
+            rootTransform.SetParent(siblingTranform.parent);
         }
 
+        internal void StartGame(RectTransform siblingTransform)
+        {
+            Parse(siblingTransform);
+        }
     }
 }

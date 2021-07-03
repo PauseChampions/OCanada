@@ -13,7 +13,7 @@
       
       <horizontal pref-width='50' pad-top='1'>
         <button text='Close' click-event='close-modal' pad-left='10'/>
-        <primary-button text='Play' pad-right='10'/>
+        <primary-button text='Play' pad-right='10' on-click='play-button-clicked'/>
       </horizontal>
       
     </vertical>

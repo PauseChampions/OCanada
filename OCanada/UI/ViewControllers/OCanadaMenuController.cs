@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-
-using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.GameplaySetup;
-using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using UnityEngine;
 using Zenject;
 
 
-namespace OCanada.UI.ViewControllers
+namespace OCanada.UI
 {
     class OCanadaMenuController : IInitializable, IDisposable, INotifyPropertyChanged
     {
         private OCanadaDetailsController oCanadaDetailsController;
+        private readonly OCanadaGameController oCanadaGameController;
         public event PropertyChangedEventHandler PropertyChanged;
 
         [UIComponent("root")]
@@ -26,9 +22,28 @@ namespace OCanada.UI.ViewControllers
         [UIComponent("list")]
         public CustomListTableData customListTableData;
 
-        public OCanadaMenuController(OCanadaDetailsController oCanadaDetailsController)
+        public OCanadaMenuController(OCanadaDetailsController oCanadaDetailsController, OCanadaGameController oCanadaGameController)
         {
             this.oCanadaDetailsController = oCanadaDetailsController;
+            this.oCanadaGameController = oCanadaGameController;
+        }
+
+        public void Initialize()
+        {
+            GameplaySetup.instance.AddTab("O Canada", "OCanada.UI.Views.OCanadaMenu.bsml", this);
+            oCanadaDetailsController.PlayClicked += OCanadaDetailsController_PlayClicked;
+        }
+
+        public void Dispose()
+        {
+            GameplaySetup.instance?.RemoveTab("O Canada");
+            oCanadaDetailsController.PlayClicked -= OCanadaDetailsController_PlayClicked;
+        }
+
+        private void OCanadaDetailsController_PlayClicked()
+        {
+            oCanadaGameController.StartGame(rootTransform);
+            rootTransform.gameObject.SetActive(false);
         }
 
         [UIAction("#post-parse")]
@@ -39,16 +54,6 @@ namespace OCanada.UI.ViewControllers
             customListTableData.data.Add(new CustomListTableData.CustomCellInfo("♾ Endless"));
             customListTableData.data.Add(new CustomListTableData.CustomCellInfo("📕 About"));
             customListTableData.tableView.ReloadData();
-        }
-
-        public void Initialize()
-        {
-            GameplaySetup.instance.AddTab("O Canada", "OCanada.UI.Views.OCanadaMenu.bsml", this);           
-        }
-
-        public void Dispose()
-        {
-            GameplaySetup.instance?.RemoveTab("O Canada");
         }
 
         [UIAction("funny-selected")]

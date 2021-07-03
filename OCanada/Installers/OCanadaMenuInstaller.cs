@@ -1,9 +1,4 @@
-﻿using OCanada.UI.ViewControllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OCanada.UI;
 using Zenject;
 
 namespace OCanada.Installers
@@ -14,6 +9,7 @@ namespace OCanada.Installers
         {
             Container.BindInterfacesTo<OCanadaMenuController>().AsSingle();
             Container.BindInterfacesAndSelfTo<OCanadaDetailsController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<OCanadaGameController>().AsSingle();
         }
     }
 }

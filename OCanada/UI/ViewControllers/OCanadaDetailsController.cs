@@ -1,26 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Components;
-using BeatSaberMarkupLanguage.GameplaySetup;
 using BeatSaberMarkupLanguage.Parser;
-using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using IPA.Utilities;
 using UnityEngine;
 using Zenject;
 
-namespace OCanada.UI.ViewControllers
+namespace OCanada.UI
 {
     class OCanadaDetailsController : IInitializable, IDisposable, INotifyPropertyChanged
     {
-        private GameplaySetupViewController gameplaySetupViewController;
-        public event PropertyChangedEventHandler PropertyChanged;
+        private readonly GameplaySetupViewController gameplaySetupViewController;
         private bool parsed;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        internal event Action PlayClicked;
 
         [UIComponent("root")]
         private readonly RectTransform rootTransform;
@@ -55,6 +52,13 @@ namespace OCanada.UI.ViewControllers
             gameplaySetupViewController.didDeactivateEvent -= GameplaySetupViewController_didDeactivateEvent;
         }
 
+        [UIAction("play-button-clicked")]
+        private void PlayButtonClicked()
+        {
+            parserParams.EmitEvent("close-modal");
+            PlayClicked?.Invoke();
+        }
+
         private void GameplaySetupViewController_didDeactivateEvent(bool firstActivation, bool addedToHierarchy)
         {
             if (parsed && rootTransform != null && modalTransform != null)
@@ -67,7 +71,7 @@ namespace OCanada.UI.ViewControllers
         {
             if (!parsed)
             {
-                BSMLParser.instance.Parse(BeatSaberMarkupLanguage.Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "OCanada.UI.Views.OCanadaDetails.bsml"), parentTransform.gameObject, this);
+                BSMLParser.instance.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "OCanada.UI.Views.OCanadaDetails.bsml"), parentTransform.gameObject, this);
                 modalPosition = modalTransform.position;
                 parsed = true;
             }
