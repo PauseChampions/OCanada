@@ -3,7 +3,7 @@
     <vertical horizontal-fit='PreferredSize' vertical-fit='PreferredSize' preferred-width='80' preferred-height='20'>
       
       <vertical pad-bottom='21'>
-        <text text='Gamemode' font-size='8.5' align='Center'/>
+        <text text='~game-mode' font-size='8.5' align='Center'/>
         
         <horizontal horizontal-fit='PreferredSize' vertical-fit='PreferredSize' pref-width='75' pref-height='63' spacing='2' pad-top='22'>
           <text-page text='~amongus'/>
@@ -13,7 +13,7 @@
       
       <horizontal pref-width='50' pad-top='1'>
         <button text='Close' click-event='close-modal' pad-left='10'/>
-        <primary-button text='Play' pad-right='10' on-click='play-button-clicked'/>
+        <primary-button text='Play' pad-right='10' on-click='play-button-clicked' active='~play-active'/>
       </horizontal>
       
     </vertical>

@@ -11,13 +11,14 @@ using Zenject;
 
 namespace OCanada.UI
 {
-    class OCanadaDetailsController : IInitializable, IDisposable, INotifyPropertyChanged
+    public class OCanadaDetailsController : IInitializable, IDisposable, INotifyPropertyChanged
     {
         private readonly GameplaySetupViewController gameplaySetupViewController;
         private bool parsed;
+        private Mode selectedMode;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        internal event Action PlayClicked;
+        internal event Action<Mode> PlayClicked;
 
         [UIComponent("root")]
         private readonly RectTransform rootTransform;
@@ -33,18 +34,16 @@ namespace OCanada.UI
         [UIParams]
         private readonly BSMLParserParams parserParams;
 
-        [UIValue("amongus")]
-        public static string amongus = "Justin Lachance-Guillemette, toujours champion canadien du jeu vidéo Beat Saber. Un jeune Félicinois, Justin Lachance-Guillemette, alias Electrostats, a défendu avec succès, dimanche dernier, son titre de champion canadien du jeu vidéo Beat Saber. Le jeune homme de 22 ans, natif de Saint-Félicien, a ainsi battu au jeu Beat Saber son adversaire, Orinix, un joueur provenant de la Nouvelle-Écosse, en finale du tournoi canadien, division AAA. Pour le néophyte, Beat Saber est en fait un jeu vidéo en réalité virtuelle, où le joueur doit détruire des blocs à l’aide de sabres en suivant le rythme de différentes chansons, le tout en évitant des obstacles pour obtenir le meilleur taux d'efficacité. Bien humblement, il avoue faire partie de l’élite mondiale pour ce jeu vidéo. Dans un classement qui réunit les 300 000 meilleurs joueurs au monde, Justin Lachance-Guillemette, ou plutôt Electrostats, occupe présentement le 6e rang. D'ailleurs, il est le seul Canadien dans le top-10 mondial, classement largement dominé par les Américains. (Justin Lachance-Guillemette, alias Electrostats, a défendu avec succès son titre de champion canadien du jeu vidéo Beat Saber)";
-
         public OCanadaDetailsController(GameplaySetupViewController gameplaySetupViewController)
         {
             this.gameplaySetupViewController = gameplaySetupViewController;
-            parsed = false;
         }
 
         public void Initialize()
         {
             gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent;
+            parsed = false;
+            selectedMode = Mode.None;
         }
 
         public void Dispose()
@@ -56,7 +55,7 @@ namespace OCanada.UI
         private void PlayButtonClicked()
         {
             parserParams.EmitEvent("close-modal");
-            PlayClicked?.Invoke();
+            PlayClicked?.Invoke(selectedMode);
         }
 
         private void GameplaySetupViewController_didDeactivateEvent(bool firstActivation, bool addedToHierarchy)
@@ -79,11 +78,31 @@ namespace OCanada.UI
             FieldAccessor<ModalView, bool>.Set(ref modalView, "_animateParentCanvas", true);
         }
 
-        internal void ShowModal(Transform parentTransform)
+        internal void ShowModal(Transform parentTransform, int index)
         {
             Parse(parentTransform);
             parserParams.EmitEvent("close-modal");
             parserParams.EmitEvent("open-modal");
+            selectedMode = (Mode)index;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GameMode)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PlayActive)));
         }
+
+        [UIValue("game-mode")]
+        private string GameMode => selectedMode.ToString();
+
+        [UIValue("play-active")]
+        private bool PlayActive => selectedMode != Mode.About;
+
+        [UIValue("amongus")]
+        private string TextPage => "venogay";
+    }
+
+    public enum Mode
+    {
+        Standard,
+        Endless,
+        About,
+        None
     }
 }
