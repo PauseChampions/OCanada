@@ -118,6 +118,7 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\ViewControllers\OCanadaResultsScreenController.cs" />
     <Compile Include="UI\ViewControllers\OCanadaDetailsController.cs" />
     <Compile Include="UI\ViewControllers\OCanadaGameController.cs" />
     <Compile Include="UI\ViewControllers\OCanadaMenuController.cs" />
@@ -136,6 +137,7 @@
     <EmbeddedResource Include="UI\ViewControllers\OCanadaPauseMenuController.bsml">
       <DependentUpon>OCanadaPauseMenuController.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Views\OCanadaResultsScreen.bsml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BeatSaberModdingTools.Tasks">
