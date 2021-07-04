@@ -1,5 +1,4 @@
-﻿/*
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
@@ -8,7 +7,8 @@ namespace OCanada.Configuration
     internal class PluginConfig
     {
         public static PluginConfig Instance { get; set; }
-        public virtual int IntValue { get; set; } = 42; // Must be 'virtual' if you want BSIPA to detect a value change and save the config automatically.
+        public virtual int HighScoreStandard { get; set; } = 1; // Must be 'virtual' if you want BSIPA to detect a value change and save the config automatically.
+        public virtual float HighScoreEndless { get; set; } = 0;
 
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
@@ -35,4 +35,3 @@ namespace OCanada.Configuration
         }
     }
 }
-*/

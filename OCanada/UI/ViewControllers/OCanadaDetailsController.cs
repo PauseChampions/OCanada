@@ -86,6 +86,7 @@ namespace OCanada.UI
             selectedMode = (Mode)index;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GameMode)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PlayActive)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TextPage)));
         }
 
         [UIValue("game-mode")]
@@ -95,7 +96,33 @@ namespace OCanada.UI
         private bool PlayActive => selectedMode != Mode.About;
 
         [UIValue("amongus")]
-        private string TextPage => "venogay";
+        private string TextPage
+        {
+            get
+            {
+                switch(selectedMode)
+                {
+                    case Mode.Standard:
+                        return "Get as many points as you can in 60 seconds!" +
+                            "\n\nWatch out for Canadian flags! Hitting those will subtract points!" +
+                            "\n\nThe BSWC and BSWC Staff logos give bonus points." +
+                            "\n\nGood luck 🙂";
+                    case Mode.Endless:
+                        return "How long can you go? 😳" +
+                            "\n\nStart off with 10 seconds. Every flag you click will add time. " +
+                            "Don't hit Canadian flags though! Hitting those will subtract time." +
+                            "\n\nGood luck 🙂";
+                    case Mode.About:
+                        return "O Canada is essentially a Beat Saber port of Whack-a-Mole for Epic" +
+                            " Canadians competing in the World cup! Click on competitors' flags to " +
+                            "assert dominance and compete against your team mates (IN A FRIENDLY WAY THOUGH)." +
+                            "\n\nGood luck Canadian gamers!" +
+                            "\n - PauseChampions™ Team";
+                    default:
+                        return null;
+                }
+            }
+        }
     }
 
     public enum Mode

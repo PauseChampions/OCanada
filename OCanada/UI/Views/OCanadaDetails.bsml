@@ -6,7 +6,7 @@
         <text text='~game-mode' font-size='8.5' align='Center'/>
         
         <horizontal horizontal-fit='PreferredSize' vertical-fit='PreferredSize' pref-width='75' pref-height='63' spacing='2' pad-top='22'>
-          <text-page text='~amongus'/>
+          <text-page text='~amongus' italics='false'/>
         </horizontal>
       </vertical>
       

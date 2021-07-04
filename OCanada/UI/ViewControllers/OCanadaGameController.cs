@@ -6,6 +6,7 @@ using System.Reflection;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
+using OCanada.Configuration;
 using OCanada.UI.ViewControllers;
 using UnityEngine;
 using Zenject;
@@ -19,6 +20,22 @@ namespace OCanada.UI
         private Mode selectedMode;
         private OCanadaPauseMenuController oCanadaPauseMenuController;
         public event Action GameExit;
+        private string _userName;
+        private IPlatformUserModel platformUserModel;
+
+        private int _score;
+        private int Score
+        {
+            get
+            {
+                return _score;
+            }
+            set
+            {
+                _score = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScoreFormatted)));
+            }
+        }
 
         [UIComponent("root")]
         private readonly RectTransform rootTransform;
@@ -29,20 +46,69 @@ namespace OCanada.UI
             return new ClickableFlag() as object;
         }).ToList();
 
-        public OCanadaGameController(OCanadaPauseMenuController oCanadaPauseMenuController)
+
+
+        [UIValue("username")]
+        private string Username
+        {
+            get => _userName;
+            set
+            {
+                _userName = value.Substring(0, 3).ToUpper();
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Username)));
+            }
+        }
+
+        [UIValue("timer")]
+        private string FormattedTimer => "0.001s";
+
+        [UIValue("score")]
+        private string ScoreFormatted
+        {
+            get => $"Score: {Score}";
+        }
+
+        [UIValue("high-score")]
+        private string HighScoreFormatted
+        {
+            get
+            {
+                if (selectedMode == Mode.Standard)
+                {
+                    return $"High Score: {PluginConfig.Instance.HighScoreStandard}";
+                }
+                else if (selectedMode == Mode.Endless)
+                {
+                    return $"High Score: {PluginConfig.Instance.HighScoreEndless}";
+                }
+                else
+                {
+                    return "uh oh";
+                }
+            }
+        }
+        public OCanadaGameController(OCanadaPauseMenuController oCanadaPauseMenuController, IPlatformUserModel platformUserModel)
         {
             this.oCanadaPauseMenuController = oCanadaPauseMenuController;
+            this.platformUserModel = platformUserModel;
         }
         public void Initialize()
         {
             parsed = false;
             selectedMode = Mode.None;
+            GetUsername();
             oCanadaPauseMenuController.ExitClicked += OCanadaPauseMenuController_ExitClicked;
         }
 
         public void Dispose()
         {
             oCanadaPauseMenuController.ExitClicked -= OCanadaPauseMenuController_ExitClicked;
+        }
+
+        private async void GetUsername()
+        {
+            UserInfo user = await platformUserModel.GetUserInfo();
+            Username = user.userName;
         }
 
         private void Parse(RectTransform siblingTranform)
@@ -60,7 +126,9 @@ namespace OCanada.UI
             Parse(siblingTransform);
             rootTransform.gameObject.SetActive(true);
             this.selectedMode = selectedMode;
-            FlagImage flagImage = new FlagImage("OCanada.Images.Canada.png");
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HighScoreFormatted)));
+            Score = 0;
+            FlagImage flagImage = new FlagImage("OCanada.Images.Canada.png", 1);
             flagImage.SpriteLoaded += FlagImage_SpriteLoaded;
             _ = flagImage.Sprite;
         }
