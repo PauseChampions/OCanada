@@ -69,8 +69,11 @@ namespace OCanada.UI
 
         private void OCanadaGameController_GameExit(Mode selectedMode, int score)
         {
-            rootTransform.gameObject.SetActive(true);
-            oCanadaResultsScreenController.ShowModal(rootTransform, selectedMode, score);
+            if (rootTransform != null)
+            {
+                rootTransform.gameObject.SetActive(true);
+                oCanadaResultsScreenController.ShowModal(rootTransform, selectedMode, score);
+            }
         }
     }
 }

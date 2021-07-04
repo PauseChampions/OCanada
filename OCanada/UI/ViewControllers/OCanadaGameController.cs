@@ -305,24 +305,30 @@ namespace OCanada.UI
 
         private void ExitGame()
         {
-            rootTransform.gameObject.SetActive(false);
-            gameObject.SetActive(false);
-
-            foreach (var clickableFlag in clickableImages.OfType<ClickableFlag>())
+            if (rootTransform != null && gameObject != null)
             {
-                clickableFlag.FlagClickedEvent -= ClickableFlag_FlagClickedEvent;
-            }
+                rootTransform.gameObject.SetActive(false);
+                gameObject.SetActive(false);
 
-            if (selectedMode == Mode.Standard)
-            {
-                PluginConfig.Instance.HighScoreStandard = Score > PluginConfig.Instance.HighScoreStandard ? Score : PluginConfig.Instance.HighScoreStandard;
-            }
-            else if (selectedMode == Mode.Endless)
-            {
-                PluginConfig.Instance.HighScoreEndless = Score > PluginConfig.Instance.HighScoreEndless ? Score : PluginConfig.Instance.HighScoreEndless;
-            }
+                foreach (var clickableFlag in clickableImages.OfType<ClickableFlag>())
+                {
+                    if (clickableFlag != null)
+                    {
+                        clickableFlag.FlagClickedEvent -= ClickableFlag_FlagClickedEvent;
+                    }
+                }
 
-            GameExit?.Invoke(selectedMode, Score);
+                if (selectedMode == Mode.Standard)
+                {
+                    PluginConfig.Instance.HighScoreStandard = Score > PluginConfig.Instance.HighScoreStandard ? Score : PluginConfig.Instance.HighScoreStandard;
+                }
+                else if (selectedMode == Mode.Endless)
+                {
+                    PluginConfig.Instance.HighScoreEndless = Score > PluginConfig.Instance.HighScoreEndless ? Score : PluginConfig.Instance.HighScoreEndless;
+                }
+
+                GameExit?.Invoke(selectedMode, Score);
+            }
         }
 
         private void GameplaySetupViewController_didDeactivateEvent(bool removedFromHierarchy, bool screenSystemDisabling)
