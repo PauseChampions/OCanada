@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OCanada
 {
@@ -10,7 +7,7 @@ namespace OCanada
     {
         public static List<FlagImage> FlagList = new FlagImage[]
         {
-            new FlagImage("OCanada.Images.Canada.png", -1),
+            new FlagImage("OCanada.Images.Canada.png", -10),
             new FlagImage("OCanada.Images.Australia.png", 1),
             new FlagImage("OCanada.Images.Austria.png", 1),
             new FlagImage("OCanada.Images.Belgium.png", 1),

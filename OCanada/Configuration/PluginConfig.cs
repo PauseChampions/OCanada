@@ -8,7 +8,7 @@ namespace OCanada.Configuration
     {
         public static PluginConfig Instance { get; set; }
         public virtual int HighScoreStandard { get; set; } = 1; // Must be 'virtual' if you want BSIPA to detect a value change and save the config automatically.
-        public virtual float HighScoreEndless { get; set; } = 0;
+        public virtual int HighScoreEndless { get; set; } = 0;
 
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).

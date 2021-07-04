@@ -12,6 +12,7 @@ namespace OCanada.UI
 {
     internal class OCanadaPauseMenuController : IInitializable, IDisposable
     {
+        public event Action ResumeClicked;
         public event Action ExitClicked;
 
         [UIParams]
@@ -32,13 +33,13 @@ namespace OCanada.UI
 
         private Vector3 modalPosition;
 
-        public void Construct(GameplaySetupViewController gameplaySetupViewController)
+        public OCanadaPauseMenuController(GameplaySetupViewController gameplaySetupViewController)
         {
             this.gameplaySetupViewController = gameplaySetupViewController;
         }
         public void Initialize()
         {
-            gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent; // null reference exception
+            gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent;
             parsed = false;
         }
 
@@ -60,7 +61,7 @@ namespace OCanada.UI
         private void ResumeButtonPressed()
         {
             parserParams.EmitEvent("close-modal");
-            // resume(); u feel
+            ResumeClicked?.Invoke();
         }
 
         [UIAction("exit-pressed")]

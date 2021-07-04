@@ -21,7 +21,8 @@ namespace OCanada.UI
         private Mode selectedMode;
 
         private int prevUpdate;
-        private float currentTime;
+        private int currentTime;
+        private int currentTimeSeconds;
         private readonly float SPAWN_TIME = 5000;
 
         private System.Random random;
@@ -32,6 +33,7 @@ namespace OCanada.UI
         private IPlatformUserModel platformUserModel;
 
         private int _score;
+        private int _timer;
         private int Score
         {
             get
@@ -42,6 +44,19 @@ namespace OCanada.UI
             {
                 _score = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ScoreFormatted)));
+            }
+        }
+
+        private int Timer
+        {
+            get
+            {
+                return _timer;
+            }
+            set
+            {
+                _timer = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimerFormatted)));
             }
         }
 
@@ -67,7 +82,7 @@ namespace OCanada.UI
         }
 
         [UIValue("timer")]
-        private string FormattedTimer => "0.001s";
+        private string TimerFormatted => $"{Timer}s";
 
         [UIValue("score")]
         private string ScoreFormatted
@@ -113,17 +128,21 @@ namespace OCanada.UI
             
             Score = 0;
             prevUpdate = 1;
-            currentTime = SPAWN_TIME;
+            currentTime = 0;
+            currentTimeSeconds = 0;
+            Timer = 0;
             random = new System.Random();
 
             gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent;
-            oCanadaPauseMenuController.ExitClicked += OCanadaPauseMenuController_ExitClicked;
+            oCanadaPauseMenuController.ResumeClicked += ResumeGame;
+            oCanadaPauseMenuController.ExitClicked += ExitGame;
         }
 
         public void Dispose()
         {
             gameplaySetupViewController.didDeactivateEvent -= GameplaySetupViewController_didDeactivateEvent;
-            oCanadaPauseMenuController.ExitClicked -= OCanadaPauseMenuController_ExitClicked;
+            oCanadaPauseMenuController.ResumeClicked -= ResumeGame;
+            oCanadaPauseMenuController.ExitClicked -= ExitGame;
         }
 
         private async void GetUsername()
@@ -138,7 +157,6 @@ namespace OCanada.UI
             {
                 BSMLParser.instance.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "OCanada.UI.Views.OCanadaGame.bsml"), siblingTranform.parent.gameObject, this);
                 parsed = true;
-                gameObject.SetActive(true);
             }
             rootTransform.SetParent(siblingTranform.parent);
             transform.SetParent(rootTransform);
@@ -149,9 +167,19 @@ namespace OCanada.UI
             Parse(siblingTransform);
             rootTransform.gameObject.SetActive(true);
             this.selectedMode = selectedMode;
-            
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HighScoreFormatted)));
+
             Score = 0;
+            prevUpdate = Mathf.FloorToInt(Time.time * 1000);
+            currentTime = 0;
+            currentTimeSeconds = 0;
+
+            if (selectedMode == Mode.Standard)
+            {
+                Timer = 60;
+            }
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimerFormatted)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HighScoreFormatted)));
 
             foreach (var clickableFlag in clickableImages.OfType<ClickableFlag>())
             {
@@ -159,6 +187,7 @@ namespace OCanada.UI
             }
 
             SpawnFlags();
+            gameObject.SetActive(true);
         }
 
         public void Update()
@@ -168,6 +197,22 @@ namespace OCanada.UI
                 var currentUpdate = Mathf.FloorToInt(Time.time * 1000);
                 var difference = currentUpdate - prevUpdate; //Calculate difference in time
                 prevUpdate = currentUpdate;
+                UpdateTime(difference);
+            }
+        }
+
+        private void UpdateTime(int difference)
+        {
+            currentTime += difference;
+            if (currentTime > (currentTimeSeconds + 1) * 1000)
+            {
+                currentTimeSeconds++;
+                Timer--;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimerFormatted)));
+                if (Timer <= 0)
+                {
+                    ExitGame();
+                }
             }
         }
 
@@ -220,8 +265,24 @@ namespace OCanada.UI
             }
         }
 
+        [UIAction("pause-clicked")]
+        private void PauseGame()
+        {
+            oCanadaPauseMenuController.ShowModal(rootTransform);
+            gameObject.SetActive(false);
+        }
+
+        private void ResumeGame()
+        {
+            prevUpdate = Mathf.FloorToInt(Time.time * 1000);
+            gameObject.SetActive(true);
+        }
+
         private void ExitGame()
         {
+            rootTransform.gameObject.SetActive(false);
+            gameObject.SetActive(false);
+
             foreach (var clickableFlag in clickableImages.OfType<ClickableFlag>())
             {
                 clickableFlag.FlagClickedEvent -= ClickableFlag_FlagClickedEvent;
@@ -234,25 +295,13 @@ namespace OCanada.UI
             {
                 PluginConfig.Instance.HighScoreEndless = Score > PluginConfig.Instance.HighScoreEndless ? Score : PluginConfig.Instance.HighScoreEndless;
             }
-        }
 
-        [UIAction("pause-clicked")]
-        private void PauseButtonClicked()
-        {
-            oCanadaPauseMenuController.ShowModal(rootTransform);
-            // pause(); u feel
+            GameExit?.Invoke();
         }
 
         private void GameplaySetupViewController_didDeactivateEvent(bool removedFromHierarchy, bool screenSystemDisabling)
         {
-            OCanadaPauseMenuController_ExitClicked();
-        }
-
-        private void OCanadaPauseMenuController_ExitClicked()
-        {
-            rootTransform.gameObject.SetActive(false);
             ExitGame();
-            GameExit?.Invoke();
         }
     }
 
