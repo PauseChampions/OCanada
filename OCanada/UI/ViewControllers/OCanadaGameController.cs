@@ -12,12 +12,15 @@ using Zenject;
 
 namespace OCanada.UI
 {
-    internal class OCanadaGameController : IInitializable, IDisposable, INotifyPropertyChanged
+    internal class OCanadaGameController : MonoBehaviour, IInitializable, IDisposable, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private bool parsed;
         private Mode selectedMode;
         private OCanadaPauseMenuController oCanadaPauseMenuController;
+        private int prevUpdate;
+        private float currentTime;
+        private readonly float SPAWN_TIME = 5000;
         public event Action GameExit;
 
         [UIComponent("root")]
@@ -29,14 +32,19 @@ namespace OCanada.UI
             return new ClickableFlag() as object;
         }).ToList();
 
-        public OCanadaGameController(OCanadaPauseMenuController oCanadaPauseMenuController)
+        [Inject]
+        public void Construct(OCanadaPauseMenuController oCanadaPauseMenuController)
         {
             this.oCanadaPauseMenuController = oCanadaPauseMenuController;
         }
+
         public void Initialize()
         {
             parsed = false;
+            gameObject.SetActive(false);
             selectedMode = Mode.None;
+            prevUpdate = 1;
+            currentTime = SPAWN_TIME;
             oCanadaPauseMenuController.ExitClicked += OCanadaPauseMenuController_ExitClicked;
         }
 
@@ -51,8 +59,10 @@ namespace OCanada.UI
             {
                 BSMLParser.instance.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "OCanada.UI.Views.OCanadaGame.bsml"), siblingTranform.parent.gameObject, this);
                 parsed = true;
+                gameObject.SetActive(true);
             }
             rootTransform.SetParent(siblingTranform.parent);
+            transform.SetParent(rootTransform);
         }
 
         internal void StartGame(RectTransform siblingTransform, Mode selectedMode)
@@ -65,7 +75,27 @@ namespace OCanada.UI
             _ = flagImage.Sprite;
         }
 
-        internal void ExitGame()
+        public void Update()
+        {
+            if (Time.time * 1000 >= prevUpdate)
+            {
+                var currentUpdate = Mathf.FloorToInt(Time.time * 1000);
+                var difference = currentUpdate - prevUpdate; //Calculate difference in time
+                SpawnFlags(difference); //Pass difference to flash image
+                prevUpdate = currentUpdate;
+            }
+        }
+
+        private void SpawnFlags(int difference)
+        {
+            currentTime -= difference;
+            if (currentTime <= 0)
+            {
+                currentTime = SPAWN_TIME;
+            }
+        }
+
+        private void ExitGame()
         {
             // TODO: exit game pog
         }
@@ -74,7 +104,10 @@ namespace OCanada.UI
         {
             if (sender is FlagImage flagImage)
             {
-                (clickableImages[0] as ClickableFlag).clickableImage.sprite = flagImage.Sprite;
+                foreach (var clickableFlag in clickableImages.OfType<ClickableFlag>())
+                {
+                    clickableFlag.clickableImage.sprite = flagImage.Sprite;
+                }
                 flagImage.SpriteLoaded -= FlagImage_SpriteLoaded;
             }
         }
