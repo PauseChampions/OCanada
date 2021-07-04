@@ -38,7 +38,7 @@ namespace OCanada.UI
         }
         public void Initialize()
         {
-            gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent; ;
+            gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent; // null reference exception
             parsed = false;
         }
 

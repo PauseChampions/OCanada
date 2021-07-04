@@ -6,6 +6,7 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Parser;
 using HMUI;
 using IPA.Utilities;
+using OCanada.Configuration;
 using UnityEngine;
 using Zenject;
 
@@ -87,10 +88,31 @@ namespace OCanada.UI
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GameMode)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PlayActive)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TextPage)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HighScoreFormatted)));
         }
 
         [UIValue("game-mode")]
         private string GameMode => selectedMode.ToString();
+
+        [UIValue("high-score")]
+        private string HighScoreFormatted
+        {
+            get
+            {
+                if (selectedMode == Mode.Standard)
+                {
+                    return $"High Score: {PluginConfig.Instance.HighScoreStandard}";
+                }
+                else if (selectedMode == Mode.Endless)
+                {
+                    return $"High Score: {PluginConfig.Instance.HighScoreEndless}";
+                }
+                else
+                {
+                    return ""; // ah yes.
+                }
+            }
+        }
 
         [UIValue("play-active")]
         private bool PlayActive => selectedMode != Mode.About;
