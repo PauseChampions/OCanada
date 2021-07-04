@@ -24,6 +24,8 @@ namespace OCanada.UI.ViewControllers
 
         private bool parsed;
 
+        GameplaySetupViewController gameplaySetupViewController;
+
         [UIComponent("root")]
         private readonly RectTransform rootTransform;
 
@@ -35,14 +37,28 @@ namespace OCanada.UI.ViewControllers
 
         private Vector3 modalPosition;
 
+        public void Construct(GameplaySetupViewController gameplaySetupViewController)
+        {
+            this.gameplaySetupViewController = gameplaySetupViewController;
+        }
         public void Initialize()
         {
+            gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent; ;
             parsed = false;
+        }
+
+        private void GameplaySetupViewController_didDeactivateEvent(bool firstActivation, bool addedToHierarchy)
+        {
+            if (parsed && rootTransform != null && modalTransform != null)
+            {
+                modalTransform.SetParent(rootTransform);
+                modalTransform.gameObject.SetActive(false);
+            }
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            gameplaySetupViewController.didDeactivateEvent -= GameplaySetupViewController_didDeactivateEvent;
         }
 
         [UIAction("resume-pressed")]
