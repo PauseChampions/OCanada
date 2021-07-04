@@ -1,4 +1,5 @@
 ﻿using OCanada.UI;
+using OCanada.UI.ViewControllers;
 using Zenject;
 
 namespace OCanada.Installers
@@ -10,6 +11,7 @@ namespace OCanada.Installers
             Container.BindInterfacesTo<OCanadaMenuController>().AsSingle();
             Container.BindInterfacesAndSelfTo<OCanadaDetailsController>().AsSingle();
             Container.BindInterfacesAndSelfTo<OCanadaGameController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<OCanadaPauseMenuController>().AsSingle();
         }
     }
 }

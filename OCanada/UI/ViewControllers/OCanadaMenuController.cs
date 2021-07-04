@@ -32,12 +32,14 @@ namespace OCanada.UI
         {
             GameplaySetup.instance.AddTab("O Canada", "OCanada.UI.Views.OCanadaMenu.bsml", this);
             oCanadaDetailsController.PlayClicked += OCanadaDetailsController_PlayClicked;
+            oCanadaGameController.GameExit += OCanadaGameController_GameExit;
         }
 
         public void Dispose()
         {
             GameplaySetup.instance?.RemoveTab("O Canada");
             oCanadaDetailsController.PlayClicked -= OCanadaDetailsController_PlayClicked;
+            oCanadaGameController.GameExit -= OCanadaGameController_GameExit;
         }
 
         private void OCanadaDetailsController_PlayClicked(Mode selectedMode)
@@ -56,11 +58,16 @@ namespace OCanada.UI
             customListTableData.tableView.ReloadData();
         }
 
-        [UIAction("funny-selected")]
+        [UIAction("funny-selected")] // i hate whoever called it this
         private void FunnySelected(TableView tableView, int index)
         {
             customListTableData.tableView.ClearSelection();
             oCanadaDetailsController.ShowModal(rootTransform, index);
+        }
+
+        private void OCanadaGameController_GameExit()
+        {
+            rootTransform.gameObject.SetActive(true);
         }
     }
 }

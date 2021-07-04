@@ -120,6 +120,7 @@
     <Compile Include="UI\ViewControllers\OCanadaDetailsController.cs" />
     <Compile Include="UI\ViewControllers\OCanadaGameController.cs" />
     <Compile Include="UI\ViewControllers\OCanadaMenuController.cs" />
+    <Compile Include="UI\ViewControllers\OCanadaPauseMenuController.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
@@ -130,6 +131,10 @@
     <EmbeddedResource Include="UI\Views\OCanadaMenu.bsml" />
     <EmbeddedResource Include="UI\Views\OCanadaGame.bsml" />
     <EmbeddedResource Include="UI\Views\OCanadaDetails.bsml" />
+    <EmbeddedResource Include="UI\Views\OCanadaPauseMenu.bsml" />
+    <EmbeddedResource Include="UI\ViewControllers\OCanadaPauseMenuController.bsml">
+      <DependentUpon>OCanadaPauseMenuController.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BeatSaberModdingTools.Tasks">

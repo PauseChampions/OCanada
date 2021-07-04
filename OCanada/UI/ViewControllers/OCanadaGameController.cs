@@ -1,20 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
+using OCanada.UI.ViewControllers;
 using UnityEngine;
 using Zenject;
 
 namespace OCanada.UI
 {
-    internal class OCanadaGameController : IInitializable, INotifyPropertyChanged
+    internal class OCanadaGameController : IInitializable, IDisposable, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private bool parsed;
         private Mode selectedMode;
+        private OCanadaPauseMenuController oCanadaPauseMenuController;
+        public event Action GameExit;
 
         [UIComponent("root")]
         private readonly RectTransform rootTransform;
@@ -25,10 +29,20 @@ namespace OCanada.UI
             return new ClickableFlag() as object;
         }).ToList();
 
+        public OCanadaGameController(OCanadaPauseMenuController oCanadaPauseMenuController)
+        {
+            this.oCanadaPauseMenuController = oCanadaPauseMenuController;
+        }
         public void Initialize()
         {
             parsed = false;
             selectedMode = Mode.None;
+            oCanadaPauseMenuController.ExitClicked += OCanadaPauseMenuController_ExitClicked;
+        }
+
+        public void Dispose()
+        {
+            oCanadaPauseMenuController.ExitClicked -= OCanadaPauseMenuController_ExitClicked;
         }
 
         private void Parse(RectTransform siblingTranform)
@@ -44,10 +58,16 @@ namespace OCanada.UI
         internal void StartGame(RectTransform siblingTransform, Mode selectedMode)
         {
             Parse(siblingTransform);
+            rootTransform.gameObject.SetActive(true);
             this.selectedMode = selectedMode;
             FlagImage flagImage = new FlagImage("OCanada.Images.Canada.png");
             flagImage.SpriteLoaded += FlagImage_SpriteLoaded;
             _ = flagImage.Sprite;
+        }
+
+        internal void ExitGame()
+        {
+            // TODO: exit game pog
         }
 
         private void FlagImage_SpriteLoaded(object sender, System.EventArgs e)
@@ -57,6 +77,19 @@ namespace OCanada.UI
                 (clickableImages[0] as ClickableFlag).clickableImage.sprite = flagImage.Sprite;
                 flagImage.SpriteLoaded -= FlagImage_SpriteLoaded;
             }
+        }
+
+        [UIAction("pause-clicked")]
+        private void PauseButtonClicked()
+        {
+            oCanadaPauseMenuController.ShowModal(rootTransform);
+            // pause(); u feel
+        }
+
+        private void OCanadaPauseMenuController_ExitClicked()
+        {
+            rootTransform.gameObject.SetActive(false);
+            GameExit?.Invoke();
         }
     }
 

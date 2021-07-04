@@ -1,11 +1,11 @@
 ﻿<bg id='root' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
   <vertical horizontal-fit='PreferredSize' pref-width='80'>
     <horizontal spacing='10'>
-      <button text='⏸' italics='false'/>
+      <button text='⏸' italics='false' on-click='pause-clicked'/>
       <text text='username'/>
       <vertical>
-        <text text='Score'/>
-        <text text='Hi Score'/>
+        <text text='Score' align='Right'/>
+        <text text='Hi Score' align='Right'/>
       </vertical>
     </horizontal>
  

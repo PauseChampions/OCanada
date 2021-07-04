@@ -1,5 +1,5 @@
 ﻿<bg id='root' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
-  <modal id='modal' show-event='open-modal' hide-event='close-modal' clickerino-offerino-closerino='true' size-delta-x='80' size-delta-y='60' move-to-center='false'>
+  <modal id='modal' show-event='open-modal' hide-event='close-modal' clickerino-offerino-closerino='true' size-delta-x='80' size-delta-y='60' move-to-center='true'>
     <vertical horizontal-fit='PreferredSize' vertical-fit='PreferredSize' preferred-width='80' preferred-height='20'>
       
       <vertical pad-bottom='21'>
@@ -8,7 +8,6 @@
         <horizontal horizontal-fit='PreferredSize' vertical-fit='PreferredSize' pref-width='75' pref-height='63' spacing='2' pad-top='22'>
           <text-page text='~amongus'/>
         </horizontal>
-        
       </vertical>
       
       <horizontal pref-width='50' pad-top='1'>
