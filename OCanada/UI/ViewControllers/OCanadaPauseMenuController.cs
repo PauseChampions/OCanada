@@ -1,19 +1,14 @@
 ﻿using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Parser;
-using BeatSaberMarkupLanguage.ViewControllers;
 using HMUI;
 using IPA.Utilities;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Zenject;
 
-namespace OCanada.UI.ViewControllers
+namespace OCanada.UI
 {
     internal class OCanadaPauseMenuController : IInitializable, IDisposable
     {

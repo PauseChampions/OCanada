@@ -7,7 +7,6 @@ using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using OCanada.Configuration;
-using OCanada.UI.ViewControllers;
 using UnityEngine;
 using Zenject;
 
@@ -15,6 +14,7 @@ namespace OCanada.UI
 {
     internal class OCanadaGameController : MonoBehaviour, IInitializable, IDisposable, INotifyPropertyChanged
     {
+        private GameplaySetupViewController gameplaySetupViewController;
         private OCanadaPauseMenuController oCanadaPauseMenuController;
 
         private bool parsed;
@@ -96,8 +96,9 @@ namespace OCanada.UI
         }
         
         [Inject]
-        public void Construct(OCanadaPauseMenuController oCanadaPauseMenuController, IPlatformUserModel platformUserModel)
+        public void Construct(GameplaySetupViewController gameplaySetupViewController, OCanadaPauseMenuController oCanadaPauseMenuController, IPlatformUserModel platformUserModel)
         {
+            this.gameplaySetupViewController = gameplaySetupViewController;
             this.oCanadaPauseMenuController = oCanadaPauseMenuController;
             this.platformUserModel = platformUserModel;
         }
@@ -110,16 +111,18 @@ namespace OCanada.UI
 
             GetUsername();
             
-            score = 0;
+            Score = 0;
             prevUpdate = 1;
             currentTime = SPAWN_TIME;
             random = new System.Random();
-            
+
+            gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent;
             oCanadaPauseMenuController.ExitClicked += OCanadaPauseMenuController_ExitClicked;
         }
 
         public void Dispose()
         {
+            gameplaySetupViewController.didDeactivateEvent -= GameplaySetupViewController_didDeactivateEvent;
             oCanadaPauseMenuController.ExitClicked -= OCanadaPauseMenuController_ExitClicked;
         }
 
@@ -149,9 +152,6 @@ namespace OCanada.UI
             
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HighScoreFormatted)));
             Score = 0;
-            FlagImage flagImage = new FlagImage("OCanada.Images.Canada.png", 1);
-            flagImage.SpriteLoaded += FlagImage_SpriteLoaded;
-            _ = flagImage.Sprite;
 
             foreach (var clickableFlag in clickableImages.OfType<ClickableFlag>())
             {
@@ -226,6 +226,14 @@ namespace OCanada.UI
             {
                 clickableFlag.FlagClickedEvent -= ClickableFlag_FlagClickedEvent;
             }
+            if (selectedMode == Mode.Standard)
+            {
+                PluginConfig.Instance.HighScoreStandard = Score > PluginConfig.Instance.HighScoreStandard ? Score : PluginConfig.Instance.HighScoreStandard;
+            }
+            else if (selectedMode == Mode.Endless)
+            {
+                PluginConfig.Instance.HighScoreEndless = Score > PluginConfig.Instance.HighScoreEndless ? Score : PluginConfig.Instance.HighScoreEndless;
+            }
         }
 
         [UIAction("pause-clicked")]
@@ -233,6 +241,11 @@ namespace OCanada.UI
         {
             oCanadaPauseMenuController.ShowModal(rootTransform);
             // pause(); u feel
+        }
+
+        private void GameplaySetupViewController_didDeactivateEvent(bool removedFromHierarchy, bool screenSystemDisabling)
+        {
+            OCanadaPauseMenuController_ExitClicked();
         }
 
         private void OCanadaPauseMenuController_ExitClicked()
