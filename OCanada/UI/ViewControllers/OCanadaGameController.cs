@@ -6,6 +6,8 @@ using System.Reflection;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
+using HMUI;
+using IPA.Utilities;
 using OCanada.Configuration;
 using UnityEngine;
 using Zenject;
@@ -312,11 +314,15 @@ namespace OCanada.UI
 
         private FlagImage flagImage;
         internal event Action<int> FlagClickedEvent;
-
         internal int PointValue => flagImage != null ? flagImage.PointValue : 0;
 
         internal void SetImage(FlagImage flagImage)
         {
+            if (this.flagImage != null)
+            {
+                this.flagImage.SpriteLoaded -= FlagImage_SpriteLoaded;
+            }
+
             if (flagImage != null)
             {
                 if (flagImage.SpriteWasLoaded)
@@ -329,6 +335,15 @@ namespace OCanada.UI
                     this.flagImage = null;
                     flagImage.SpriteLoaded += FlagImage_SpriteLoaded;
                     _ = flagImage.Sprite;
+                }
+
+                if (flagImage.PointValue >= 5)
+                {
+                    clickableImage.HighlightColor = Color.yellow;
+                }
+                else
+                {
+                    clickableImage.HighlightColor = Color.red;
                 }
             }
             else
@@ -346,6 +361,12 @@ namespace OCanada.UI
                 clickableImage.sprite = flagImage.Sprite;
                 flagImage.SpriteLoaded -= FlagImage_SpriteLoaded;
             }
+        }
+
+        [UIAction("#post-parse")]
+        private void PostParse()
+        {
+            FieldAccessor<ImageView, float>.Set(clickableImage, "_skew", 0);
         }
 
         [UIAction("flag-clicked")]
