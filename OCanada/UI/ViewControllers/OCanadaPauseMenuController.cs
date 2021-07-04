@@ -71,7 +71,6 @@ namespace OCanada.UI
             ExitClicked?.Invoke();
         }
 
-
         private void Parse(Transform parentTransform)
         {
             if (!parsed)

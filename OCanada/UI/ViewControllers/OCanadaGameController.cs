@@ -29,7 +29,7 @@ namespace OCanada.UI
         private System.Random random;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public event Action GameExit;
+        public event Action<Mode, int> GameExit;
         private string _userName;
         private IPlatformUserModel platformUserModel;
 
@@ -57,6 +57,10 @@ namespace OCanada.UI
             set
             {
                 _timer = value;
+                if (value < 0)
+                {
+                    ExitGame();
+                }
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimerFormatted)));
             }
         }
@@ -214,10 +218,6 @@ namespace OCanada.UI
                 currentTimeSeconds++;
                 Timer--;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimerFormatted)));
-                if (Timer <= 0)
-                {
-                    ExitGame();
-                }
             }
         }
 
@@ -253,12 +253,18 @@ namespace OCanada.UI
         private void ClickableFlag_FlagClickedEvent(int pointValue)
         {
             Score += pointValue;
-            bool respawn = true;
+            if (Score < 0)
+            {
+                Score = 0;
+                ExitGame();
+            }
 
             if (selectedMode == Mode.Endless)
             {
                 Timer += Mathf.CeilToInt(pointValue / 2);
             }
+
+            bool respawn = true;
 
             foreach (var clickableFlag in clickableImages.OfType<ClickableFlag>())
             {
@@ -297,6 +303,7 @@ namespace OCanada.UI
             {
                 clickableFlag.FlagClickedEvent -= ClickableFlag_FlagClickedEvent;
             }
+
             if (selectedMode == Mode.Standard)
             {
                 PluginConfig.Instance.HighScoreStandard = Score > PluginConfig.Instance.HighScoreStandard ? Score : PluginConfig.Instance.HighScoreStandard;
@@ -306,7 +313,7 @@ namespace OCanada.UI
                 PluginConfig.Instance.HighScoreEndless = Score > PluginConfig.Instance.HighScoreEndless ? Score : PluginConfig.Instance.HighScoreEndless;
             }
 
-            GameExit?.Invoke();
+            GameExit?.Invoke(selectedMode, Score);
         }
 
         private void GameplaySetupViewController_didDeactivateEvent(bool removedFromHierarchy, bool screenSystemDisabling)

@@ -5,12 +5,8 @@ using HMUI;
 using IPA.Utilities;
 using OCanada.Configuration;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
@@ -18,7 +14,6 @@ namespace OCanada.UI
 {
     class OCanadaResultsScreenController : IInitializable, IDisposable, INotifyPropertyChanged
     {
-        public event Action DoneClicked;
         public event PropertyChangedEventHandler PropertyChanged;
 
         [UIParams]
@@ -50,6 +45,7 @@ namespace OCanada.UI
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentScoreFormatted)));
             }
         }
+
         [UIValue("current-score")]
         private string CurrentScoreFormatted => $"Score: {CurrentScore}";
 
@@ -58,18 +54,25 @@ namespace OCanada.UI
         {
             get
             {
+                int highScore;
                 if (selectedMode == Mode.Standard)
                 {
-                    return $"High Score: {PluginConfig.Instance.HighScoreStandard}";
+                    highScore = PluginConfig.Instance.HighScoreStandard;
                 }
                 else if (selectedMode == Mode.Endless)
                 {
-                    return $"High Score: {PluginConfig.Instance.HighScoreEndless}";
+                    highScore = PluginConfig.Instance.HighScoreEndless;
                 }
                 else
                 {
                     return ""; // ah yes.
                 }
+
+                if (highScore == CurrentScore)
+                {
+                    return $"<color=green>High Score: {highScore}</color>";
+                }
+                return $"High Score: {highScore}";
             }
         }
 
@@ -81,6 +84,7 @@ namespace OCanada.UI
         {
             gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent;
             parsed = false;
+            _currentScore = 0;
         }
 
         private void GameplaySetupViewController_didDeactivateEvent(bool firstActivation, bool addedToHierarchy)
@@ -96,14 +100,6 @@ namespace OCanada.UI
         {
             gameplaySetupViewController.didDeactivateEvent -= GameplaySetupViewController_didDeactivateEvent;
         }
-
-        [UIAction("done-pressed")]
-        private void ExitButtonPressed()
-        {
-            parserParams.EmitEvent("close-modal");
-            DoneClicked?.Invoke();
-        }
-
 
         private void Parse(Transform parentTransform)
         {
@@ -124,6 +120,7 @@ namespace OCanada.UI
             parserParams.EmitEvent("open-modal");
             this.selectedMode = selectedMode;
             CurrentScore = score;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HighScoreFormatted)));
         }
     }
 }

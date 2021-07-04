@@ -12,8 +12,9 @@ namespace OCanada.UI
 {
     class OCanadaMenuController : IInitializable, IDisposable, INotifyPropertyChanged
     {
-        private OCanadaDetailsController oCanadaDetailsController;
+        private readonly OCanadaDetailsController oCanadaDetailsController;
         private readonly OCanadaGameController oCanadaGameController;
+        private readonly OCanadaResultsScreenController oCanadaResultsScreenController;
         public event PropertyChangedEventHandler PropertyChanged;
 
         [UIComponent("root")]
@@ -22,10 +23,11 @@ namespace OCanada.UI
         [UIComponent("list")]
         public CustomListTableData customListTableData;
 
-        public OCanadaMenuController(OCanadaDetailsController oCanadaDetailsController, OCanadaGameController oCanadaGameController)
+        public OCanadaMenuController(OCanadaDetailsController oCanadaDetailsController, OCanadaGameController oCanadaGameController, OCanadaResultsScreenController oCanadaResultsScreenController)
         {
             this.oCanadaDetailsController = oCanadaDetailsController;
             this.oCanadaGameController = oCanadaGameController;
+            this.oCanadaResultsScreenController = oCanadaResultsScreenController;
         }
 
         public void Initialize()
@@ -65,9 +67,10 @@ namespace OCanada.UI
             oCanadaDetailsController.ShowModal(rootTransform, index);
         }
 
-        private void OCanadaGameController_GameExit()
+        private void OCanadaGameController_GameExit(Mode selectedMode, int score)
         {
             rootTransform.gameObject.SetActive(true);
+            oCanadaResultsScreenController.ShowModal(rootTransform, selectedMode, score);
         }
     }
 }

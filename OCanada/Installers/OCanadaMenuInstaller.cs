@@ -12,6 +12,7 @@ namespace OCanada.Installers
             Container.BindInterfacesAndSelfTo<OCanadaDetailsController>().AsSingle();
             Container.BindInterfacesAndSelfTo<OCanadaGameController>().FromNewComponentOnNewGameObject().AsSingle();
             Container.BindInterfacesAndSelfTo<OCanadaPauseMenuController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<OCanadaResultsScreenController>().AsSingle();
         }
     }
 }

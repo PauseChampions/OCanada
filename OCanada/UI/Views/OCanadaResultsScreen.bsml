@@ -4,7 +4,7 @@
 			<text font-size='8.5' text='Summary' align='Center'/>
 			<text text='~current-score' align='Center' rich-text='true'/>
 			<text text='~high-score' align='Center' rich-text='true'/>
-			<primary-button text='Done' on-click='done-clicked' />
+			<primary-button text='Done' click-event='close-modal' />
 		</vertical>
 	</modal>
 </bg>
