@@ -9,6 +9,7 @@ namespace OCanada
         public string Path { get; private set; }
         private Sprite _sprite;
         private bool SpriteLoadQueued;
+        public int PointValue { get; private set; }
 
         public bool SpriteWasLoaded { get; private set; }
         public bool Blacklist { get; private set; }
@@ -18,12 +19,13 @@ namespace OCanada
         private static bool CoroutineRunning = false;
         private static readonly Queue<Action> SpriteQueue = new Queue<Action>();
 
-        public FlagImage(string path)
+        public FlagImage(string path, int pointValue)
         {
             Path = path;
             SpriteWasLoaded = false;
             Blacklist = false;
             SpriteLoadQueued = false;
+            PointValue = pointValue;
         }
 
         public Sprite Sprite
