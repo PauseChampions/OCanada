@@ -14,9 +14,9 @@
         </horizontal>
       </vertical>
       
-      <horizontal pref-width='50' pad-top='1'>
-        <button text='Close' click-event='close-modal' pad-left='10'/>
-        <primary-button text='Play' pad-right='10' on-click='play-button-clicked' active='~play-active'/>
+      <horizontal pref-width='50' spacing='5' pad-top='1'>
+        <button text='Close' click-event='close-modal' />
+        <primary-button text='Play' on-click='play-button-clicked' active='~play-active'/>
       </horizontal>
       
     </vertical>

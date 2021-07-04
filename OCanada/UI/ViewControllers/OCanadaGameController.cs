@@ -25,7 +25,6 @@ namespace OCanada.UI
         private int prevUpdate;
         private int currentTime;
         private int currentTimeSeconds;
-        private readonly float SPAWN_TIME = 5000;
 
         private System.Random random;
 
@@ -177,7 +176,11 @@ namespace OCanada.UI
 
             if (selectedMode == Mode.Standard)
             {
-                Timer = 60;
+                Timer = 30;
+            }
+            else if (selectedMode == Mode.Endless)
+            {
+                Timer = 10;
             }
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TimerFormatted)));
@@ -251,6 +254,11 @@ namespace OCanada.UI
         {
             Score += pointValue;
             bool respawn = true;
+
+            if (selectedMode == Mode.Endless)
+            {
+                Timer += Mathf.CeilToInt(pointValue / 2);
+            }
 
             foreach (var clickableFlag in clickableImages.OfType<ClickableFlag>())
             {

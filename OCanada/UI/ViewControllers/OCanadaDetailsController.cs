@@ -125,7 +125,7 @@ namespace OCanada.UI
                 switch(selectedMode)
                 {
                     case Mode.Standard:
-                        return "Get as many points as you can in 60 seconds!" +
+                        return "Get as many points as you can in 30 seconds!" +
                             "\n\nWatch out for Canadian flags! Hitting those will subtract points!" +
                             "\n\nThe BSWC and BSWC Staff logos give bonus points." +
                             "\n\nGood luck 🙂";
