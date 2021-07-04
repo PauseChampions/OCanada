@@ -72,10 +72,10 @@ namespace OCanada.UI
             if (!parsed)
             {
                 BSMLParser.instance.Parse(Utilities.GetResourceContent(Assembly.GetExecutingAssembly(), "OCanada.UI.Views.OCanadaDetails.bsml"), parentTransform.gameObject, this);
-                modalPosition = modalTransform.position;
+                modalPosition = modalTransform.localPosition;
                 parsed = true;
             }
-            modalTransform.position = modalPosition;
+            modalTransform.localPosition = modalPosition;
             FieldAccessor<ModalView, bool>.Set(ref modalView, "_animateParentCanvas", true);
         }
 

@@ -138,6 +138,11 @@ namespace OCanada.UI
             Timer = 0;
             random = new System.Random();
 
+            foreach (var flagImage in Flags.FlagList)
+            {
+                _ = flagImage.Sprite;
+            }
+
             gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent;
             oCanadaPauseMenuController.ResumeClicked += ResumeGame;
             oCanadaPauseMenuController.ExitClicked += ExitGame;
@@ -262,6 +267,10 @@ namespace OCanada.UI
             if (selectedMode == Mode.Endless)
             {
                 Timer += Mathf.CeilToInt(pointValue / 2);
+                if (Timer > 20)
+                {
+                    Timer = 20;
+                }
             }
 
             bool respawn = true;
