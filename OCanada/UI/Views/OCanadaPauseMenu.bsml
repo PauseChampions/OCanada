@@ -1,0 +1,9 @@
+﻿<bg id='root' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+	<modal id='modal' show-event='open-modal' hide-event='close-modal' clickerino-offerino-closerino='true' size-delta-x='40' size-delta-y='35' move-to-center='true'>
+		<vertical horizontal-fit='PreferredSize' vertical-fit='PreferredSize'>
+			<text text='Paused' font-size='6' italics='true' align='Center'/>
+			<primary-button text='Resume' on-click='resume-pressed'/>
+			<button text='Exit Game' on-click='exit-pressed' />
+		</vertical>
+	</modal>
+</bg>
