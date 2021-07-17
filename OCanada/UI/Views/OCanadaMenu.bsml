@@ -8,5 +8,10 @@
   <vertical vertical-fit='PreferredSize' horizontal-fit='PreferredSize' pad-top='10'>
     <list id='list' pref-width='22' pref-height='30' list-style='Simple' select-cell='funny-selected'/>
   </vertical>
-
+  <horizontal horizontal-fit='PreferredSize' pad-top='42' pad-left='55'>
+    <clickable-image src='OCanada.Images.Sabooboo.png' pref-width="8" pref-height="8" preserve-aspect="true" hover-hint='Sabooboo'/>
+    <clickable-image src='OCanada.Images.skalx.png' pref-width="8" pref-height="8" preserve-aspect="true" hover-hint='skalx'/>
+    <clickable-image src='OCanada.Images.PixelBoom.png' pref-width="8" pref-height="8" preserve-aspect="true" hover-hint='PixelBoom'/>
+    <clickable-image src='OCanada.Images.Edison.png' pref-width="8" pref-height="8" preserve-aspect="true" hover-hint='Edison | Shitmiss Jesus'/>
+  </horizontal>
 </bg>

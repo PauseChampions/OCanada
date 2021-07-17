@@ -150,7 +150,11 @@
     <EmbeddedResource Include="Images\*.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\Edison.png" />
+    <Content Include="Images\PixelBoom.png" />
+    <Content Include="Images\skalx.png" />
     <Content Include="OCanada.csproj.user" />
+    <Content Include="Images\Sabooboo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
