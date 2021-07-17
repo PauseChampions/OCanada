@@ -81,7 +81,7 @@ namespace OCanada.UI
             get => _userName;
             set
             {
-                _userName = value.Substring(0, 3).ToUpper();
+                _userName = value.Length < 3 ? value.ToUpper() : value.Substring(0, 3).ToUpper();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Username)));
             }
         }
