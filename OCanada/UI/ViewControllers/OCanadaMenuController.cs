@@ -15,6 +15,7 @@ namespace OCanada.UI
         private readonly OCanadaDetailsController oCanadaDetailsController;
         private readonly OCanadaGameController oCanadaGameController;
         private readonly OCanadaResultsScreenController oCanadaResultsScreenController;
+        private readonly OCanadaAuthorModalController oCanadaAuthorModalController;
         public event PropertyChangedEventHandler PropertyChanged;
 
         [UIComponent("root")]
@@ -23,11 +24,12 @@ namespace OCanada.UI
         [UIComponent("list")]
         public CustomListTableData customListTableData;
 
-        public OCanadaMenuController(OCanadaDetailsController oCanadaDetailsController, OCanadaGameController oCanadaGameController, OCanadaResultsScreenController oCanadaResultsScreenController)
+        public OCanadaMenuController(OCanadaDetailsController oCanadaDetailsController, OCanadaGameController oCanadaGameController, OCanadaResultsScreenController oCanadaResultsScreenController, OCanadaAuthorModalController oCanadaAuthorModalController)
         {
             this.oCanadaDetailsController = oCanadaDetailsController;
             this.oCanadaGameController = oCanadaGameController;
             this.oCanadaResultsScreenController = oCanadaResultsScreenController;
+            this.oCanadaAuthorModalController = oCanadaAuthorModalController;
         }
 
         public void Initialize()
@@ -66,6 +68,34 @@ namespace OCanada.UI
             customListTableData.tableView.ClearSelection();
             oCanadaDetailsController.ShowModal(rootTransform, index);
         }
+
+        #region name buttons
+
+        [UIAction("sabooboo-clicked")]
+        private void SaboobooClicked()
+        {
+            oCanadaAuthorModalController.ShowModal(rootTransform, Author.Sabooboo);
+        }
+
+        [UIAction("skalx-clicked")]
+        private void SkalxClicked()
+        {
+            oCanadaAuthorModalController.ShowModal(rootTransform, Author.Skalx);
+        }
+
+        [UIAction("pixelboom-clicked")]
+        private void PixelboomClicked()
+        {
+            oCanadaAuthorModalController.ShowModal(rootTransform, Author.Pixelboom);
+        }
+
+        [UIAction("edison-clicked")]
+        private void EdisonClicked()
+        {
+            oCanadaAuthorModalController.ShowModal(rootTransform, Author.Edison);
+        }
+
+        #endregion
 
         private void OCanadaGameController_GameExit(Mode selectedMode, int score)
         {
