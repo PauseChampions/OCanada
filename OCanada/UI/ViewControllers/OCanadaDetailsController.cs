@@ -1,10 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-using System.Reflection;
-using BeatSaberMarkupLanguage;
+﻿using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Parser;
 using HMUI;
+using System;
+using System.ComponentModel;
+using System.Reflection;
 using IPA.Utilities;
 using OCanada.Configuration;
 using UnityEngine;
@@ -15,10 +15,10 @@ namespace OCanada.UI
     public class OCanadaDetailsController : IInitializable, IDisposable, INotifyPropertyChanged
     {
         private readonly GameplaySetupViewController gameplaySetupViewController;
+        public event PropertyChangedEventHandler PropertyChanged;
         private bool parsed;
         private Mode selectedMode;
 
-        public event PropertyChangedEventHandler PropertyChanged;
         internal event Action<Mode> PlayClicked;
 
         [UIComponent("root")]
@@ -65,8 +65,10 @@ namespace OCanada.UI
             {
                 modalTransform.SetParent(rootTransform);
                 modalTransform.gameObject.SetActive(false);
+
             }
         }
+
         private void Parse(Transform parentTransform)
         {
             if (!parsed)
