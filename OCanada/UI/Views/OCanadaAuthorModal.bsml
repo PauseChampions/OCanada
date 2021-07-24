@@ -1,19 +1,12 @@
 ﻿<bg id="root" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
 	<modal id='modal' show-event='open-modal' hide-event='close-modal' clickerino-offerino-closerino='true' size-delta-x='80' size-delta-y='60' move-to-center='true'>
-		<vertical horizontal-fit='PreferredSize' vertical-fit='PreferredSize' preferred-width='80' preferred-height='20'>
-			
-			<vertical pad-bottom='21'>
-				<text text='~author-name' font-size='8.5' align='Left' />
-				
-				<horizontal horizontal-fit='PreferredSize' vertical-fit='PreferredSize' pref-width='75' pref-height='63' spacing='2' pad-top='22'>
-					<text-page text='~about' italics='false' />
-				</horizontal>
-			</vertical>
-
-			<horizontal pref-width='50' spacing='5' pad-top='1'>
-				<button text='Close' click-event='close-modal' />
+		<vertical horizontal-fit='PreferredSize' vertical-fit='PreferredSize' preferred-width='75' preferred-height='55' spacing='2'>				
+			<image id='author-image' pref-height='20' pref-width='20' preserve-aspect='true' />
+			<text text='~author-name' font-size='8.5' align='Left' />
+			<horizontal horizontal-fit='PreferredSize' vertical-fit='PreferredSize' pref-width='75' pref-height='20'>
+				<text-page text='~about' italics='false' />
 			</horizontal>
-
+			<button text='Close' click-event='close-modal' />
 		</vertical>
 	</modal>
 </bg>

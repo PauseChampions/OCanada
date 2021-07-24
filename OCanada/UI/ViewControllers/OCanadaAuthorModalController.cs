@@ -11,12 +11,12 @@ using Zenject;
 
 namespace OCanada.UI
 {
-    class OCanadaAuthorModalController : IInitializable, IDisposable, INotifyPropertyChanged
+    internal class OCanadaAuthorModalController : IInitializable, IDisposable, INotifyPropertyChanged
     {
         private readonly GameplaySetupViewController gameplaySetupViewController;
         public event PropertyChangedEventHandler PropertyChanged;
-        bool parsed;
-        Author selectedAuthor;
+        private bool parsed;
+        private Author selectedAuthor;
 
         [UIComponent("root")]
         private readonly RectTransform rootTransform;
@@ -28,6 +28,9 @@ namespace OCanada.UI
         private readonly RectTransform modalTransform;
 
         private Vector3 modalPosition;
+
+        [UIComponent("author-image")]
+        private ImageView authorImage;
 
         [UIParams]
         private readonly BSMLParserParams parserParams;
@@ -41,7 +44,6 @@ namespace OCanada.UI
         {
             gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent;
             parsed = false;
-            selectedAuthor = Author.None;
         }
 
         public void Dispose()
@@ -76,40 +78,15 @@ namespace OCanada.UI
             parserParams.EmitEvent("close-modal");
             parserParams.EmitEvent("open-modal");
             this.selectedAuthor = selectedAuthor;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AuthorAbout)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AuthorName)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AuthorAbout)));
+            authorImage.sprite = selectedAuthor.Image;
         }
 
         [UIValue("author-name")]
-        private string AuthorName => selectedAuthor.ToString();
+        private string AuthorName => selectedAuthor == null ? "" : selectedAuthor.Name;
 
         [UIValue("about")]
-        private string AuthorAbout
-        {
-            get
-            {
-                switch (selectedAuthor)
-                {
-                    case Author.Sabooboo:
-                        return "Sabooboo desc";
-                    case Author.Skalx:
-                        return "Skalx desc";
-                    case Author.Pixelboom:
-                        return "Pixelboom desc";
-                    case Author.Edison:
-                        return "Edison desc";
-                    default:
-                        return null;
-                }
-            }
-        }
-    }
-    public enum Author
-    {
-        Sabooboo,
-        Skalx,
-        Pixelboom,
-        Edison,
-        None
+        private string AuthorAbout => selectedAuthor == null ? "" : selectedAuthor.Description;
     }
 }

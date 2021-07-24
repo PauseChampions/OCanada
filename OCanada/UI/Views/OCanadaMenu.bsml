@@ -9,9 +9,9 @@
     <list id='list' pref-width='22' pref-height='30' list-style='Simple' select-cell='funny-selected'/>
   </vertical>
   <horizontal horizontal-fit='PreferredSize' pad-top='42' pad-left='55'>
-    <clickable-image src='OCanada.Images.Sabooboo.png' pref-width="8" pref-height="8" preserve-aspect="true" hover-hint='Sabooboo' on-click='sabooboo-clicked'/>
-    <clickable-image src='OCanada.Images.skalx.png' pref-width="8" pref-height="8" preserve-aspect="true" hover-hint='sussy' on-click='skalx-clicked'/>
-    <clickable-image src='OCanada.Images.PixelBoom.png' pref-width="8" pref-height="8" preserve-aspect="true" hover-hint='PixelBoom' on-click='pixelboom-clicked'/>
-    <clickable-image src='OCanada.Images.Edison.png' pref-width="8" pref-height="8" preserve-aspect="true" hover-hint='Edison | Shitmiss Jesus' on-click='edison-clicked'/>
+    <clickable-image src='OCanada.Images.Sabooboo.png' pref-width='8' pref-height='8' preserve-aspect='true' hover-hint='Sabooboo' on-click='sabooboo-clicked'/>
+    <clickable-image src='OCanada.Images.Skalx.png' pref-width='8' pref-height='8' preserve-aspect='true' hover-hint='Skalx' on-click='skalx-clicked'/>
+    <clickable-image src='OCanada.Images.PixelBoom.png' pref-width='8' pref-height='8' preserve-aspect='true' hover-hint='PixelBoom' on-click='pixelboom-clicked'/>
+    <clickable-image src='OCanada.Images.Edison.png' pref-width='8' pref-height='8' preserve-aspect='true' hover-hint='Edison | Sh*tmiss Jesus' on-click='edison-clicked'/>
   </horizontal>
 </bg>

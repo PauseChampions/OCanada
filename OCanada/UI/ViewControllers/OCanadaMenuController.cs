@@ -10,7 +10,7 @@ using Zenject;
 
 namespace OCanada.UI
 {
-    class OCanadaMenuController : IInitializable, IDisposable, INotifyPropertyChanged
+    internal class OCanadaMenuController : IInitializable, IDisposable, INotifyPropertyChanged
     {
         private readonly OCanadaDetailsController oCanadaDetailsController;
         private readonly OCanadaGameController oCanadaGameController;
@@ -86,7 +86,7 @@ namespace OCanada.UI
         [UIAction("pixelboom-clicked")]
         private void PixelboomClicked()
         {
-            oCanadaAuthorModalController.ShowModal(rootTransform, Author.Pixelboom);
+            oCanadaAuthorModalController.ShowModal(rootTransform, Author.PixelBoom);
         }
 
         [UIAction("edison-clicked")]
