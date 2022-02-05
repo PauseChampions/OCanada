@@ -9,6 +9,7 @@ using BeatSaberMarkupLanguage.Components;
 using HMUI;
 using IPA.Utilities;
 using OCanada.Configuration;
+using OCanada.GameplaySetupScene;
 using UnityEngine;
 using Zenject;
 
@@ -32,6 +33,10 @@ namespace OCanada.UI
         public event Action<Mode, int> GameExit;
         private string _userName;
         private IPlatformUserModel platformUserModel;
+
+        private AudioPlayer audioPlayer;
+        private string[] oCanadaNotes;
+        private int currentNote;
 
         private int _score;
         private int _timer;
@@ -104,23 +109,25 @@ namespace OCanada.UI
                 {
                     return $"High Score: {PluginConfig.Instance.HighScoreStandard}";
                 }
-                else if (selectedMode == Mode.Endless)
+
+                if (selectedMode == Mode.Endless)
                 {
                     return $"High Score: {PluginConfig.Instance.HighScoreEndless}";
                 }
-                else
-                {
-                    return "uh oh";
-                }
+
+                return "uh oh";
             }
         }
         
         [Inject]
-        public void Construct(GameplaySetupViewController gameplaySetupViewController, OCanadaPauseMenuController oCanadaPauseMenuController, IPlatformUserModel platformUserModel)
+        public void Construct(GameplaySetupViewController gameplaySetupViewController, OCanadaPauseMenuController oCanadaPauseMenuController, IPlatformUserModel platformUserModel, AudioPlayer audioPlayer)
         {
             this.gameplaySetupViewController = gameplaySetupViewController;
             this.oCanadaPauseMenuController = oCanadaPauseMenuController;
             this.platformUserModel = platformUserModel;
+            this.audioPlayer = audioPlayer;
+            oCanadaNotes = Notes.OCanadaNotes;
+            currentNote = 0;
         }
 
         public void Initialize()
@@ -264,6 +271,12 @@ namespace OCanada.UI
                 ExitGame();
             }
 
+            if (pointValue > 0)
+            {
+                audioPlayer.PlayNote(oCanadaNotes[currentNote % oCanadaNotes.Length]);
+                currentNote++;
+            }
+
             if (selectedMode == Mode.Endless)
             {
                 Timer += Mathf.CeilToInt(pointValue / 2);
@@ -327,6 +340,7 @@ namespace OCanada.UI
                     PluginConfig.Instance.HighScoreEndless = Score > PluginConfig.Instance.HighScoreEndless ? Score : PluginConfig.Instance.HighScoreEndless;
                 }
 
+                currentNote = 0;
                 GameExit?.Invoke(selectedMode, Score);
             }
         }
@@ -344,6 +358,7 @@ namespace OCanada.UI
 
         private FlagImage flagImage;
         internal event Action<int> FlagClickedEvent;
+
         internal int PointValue => flagImage != null ? flagImage.PointValue : 0;
 
         internal void SetImage(FlagImage flagImage)

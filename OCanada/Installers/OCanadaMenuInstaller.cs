@@ -1,4 +1,5 @@
-﻿using OCanada.UI;
+﻿using OCanada.GameplaySetupScene;
+using OCanada.UI;
 using SiraUtil;
 using Zenject;
 
@@ -8,6 +9,7 @@ namespace OCanada.Installers
     {
         public override void InstallBindings()
         {
+            Container.Bind<AudioPlayer>().AsSingle();
             Container.BindInterfacesTo<OCanadaMenuController>().AsSingle();
             Container.BindInterfacesAndSelfTo<OCanadaDetailsController>().AsSingle();
             Container.BindInterfacesAndSelfTo<OCanadaGameController>().FromNewComponentOnNewGameObject().AsSingle();
