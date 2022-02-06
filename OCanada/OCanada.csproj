@@ -158,6 +158,7 @@
     <EmbeddedResource Include="Images\*.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CustomSounds\a4.ogg" />
     <Content Include="OCanada.csproj.user" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
