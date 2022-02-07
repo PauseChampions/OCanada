@@ -28,6 +28,8 @@ jobs:
               with:
                   manifest: ${{github.workspace}}/OCanada/manifest.json
             - name: Build
+              env:
+                  FrameworkPathOverride: /usr/lib/mono/4.7.2-api
               id: Build
               run: dotnet build --configuration Release
             - name: GitStatus
