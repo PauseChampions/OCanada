@@ -3,9 +3,9 @@
     "id": "OCanada",
     "name": "OCanada",
     "author": "The PauseChampions",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Justin Lachance-Guillemette, toujours champion canadien du jeu vidéo Beat Saber. Un jeune Félicinois, Justin Lachance-Guillemette, alias Electrostats, a défendu avec succès, dimanche dernier, son titre de champion canadien du jeu vidéo Beat Saber.",
-    "gameVersion": "1.16.1",
+    "gameVersion": "1.19.0",
     "dependsOn": {
         "BSIPA": "^4.1.6",
         "SiraUtil": "^3.0.3",
