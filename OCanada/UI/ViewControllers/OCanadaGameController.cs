@@ -10,6 +10,7 @@ using HMUI;
 using IPA.Utilities;
 using OCanada.Configuration;
 using OCanada.GameplaySetupScene;
+using OCanada.Flag;
 using UnityEngine;
 using Zenject;
 
@@ -145,11 +146,6 @@ namespace OCanada.UI
             Timer = 0;
             random = new System.Random();
 
-            foreach (var flagImage in Flags.FlagList)
-            {
-                _ = flagImage.Sprite;
-            }
-
             gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent;
             oCanadaPauseMenuController.ResumeClicked += ResumeGame;
             oCanadaPauseMenuController.ExitClicked += ExitGame;
@@ -244,14 +240,19 @@ namespace OCanada.UI
         private void SpawnFlag()
         {
             List<ClickableFlag> imageList = clickableImages.OfType<ClickableFlag>().ToList();
-            int canadianFlag = random.Next(1, 6);
             int imageIndex = random.Next(imageList.Count);
-            int flagIndex = 0;
-            if (canadianFlag != 5)
+            
+            int flagIndex = 0; // Def to 0 because this is where Canadian flag is
+            int canadianFlag = random.Next(1, 6);
+            if (canadianFlag != 5) // 1/5 chance of Canadian Flag spawn
             {
-                flagIndex = random.Next(Flags.FlagList.Count);
+                flagIndex = random.Next(Flags.Points.Count);
             }
-            imageList[imageIndex].SetImage(Flags.FlagList[flagIndex]);
+
+            var (name, pointValue) = Flags.Points.ElementAt(flagIndex);
+            var flagSprite = FlagLoader.GetSprite(name);
+
+            imageList[imageIndex].SetImage(flagSprite, pointValue);
         }
 
         private void ClearFlags()
@@ -287,12 +288,12 @@ namespace OCanada.UI
             }
 
             bool respawn = true;
-
             foreach (var clickableFlag in clickableImages.OfType<ClickableFlag>())
             {
                 if (clickableFlag.PointValue > 0)
                 {
                     respawn = false;
+                    break;
                 }
             }
 
@@ -350,62 +351,27 @@ namespace OCanada.UI
             ExitGame();
         }
     }
-
     internal class ClickableFlag
     {
         [UIComponent("clickable-image")]
         private ClickableImage clickableImage;
-
-        private FlagImage flagImage;
         internal event Action<int> FlagClickedEvent;
 
-        internal int PointValue => flagImage != null ? flagImage.PointValue : 0;
+        internal int PointValue;
 
-        internal void SetImage(FlagImage flagImage)
+        internal void SetImage(Sprite flagImage, int pointValue = 0)
         {
-            if (this.flagImage != null)
-            {
-                this.flagImage.SpriteLoaded -= FlagImage_SpriteLoaded;
-            }
-
-            if (flagImage != null)
-            {
-                if (flagImage.SpriteWasLoaded)
-                {
-                    clickableImage.sprite = flagImage.Sprite;
-                    this.flagImage = flagImage;
-                }
-                else
-                {
-                    this.flagImage = null;
-                    flagImage.SpriteLoaded += FlagImage_SpriteLoaded;
-                    _ = flagImage.Sprite;
-                }
-
-                if (flagImage.PointValue >= 5)
-                {
-                    clickableImage.HighlightColor = Color.yellow;
-                }
-                else
-                {
-                    clickableImage.HighlightColor = Color.red;
-                }
-            }
-            else
+            PointValue = pointValue;
+            if (flagImage == null)
             {
                 clickableImage.sprite = Utilities.ImageResources.BlankSprite;
-                this.flagImage = null;
+                return;
             }
-        }
-
-        private void FlagImage_SpriteLoaded(object sender, System.EventArgs e)
-        {
-            if (sender is FlagImage flagImage)
-            {
-                this.flagImage = flagImage;
-                clickableImage.sprite = flagImage.Sprite;
-                flagImage.SpriteLoaded -= FlagImage_SpriteLoaded;
-            }
+            
+            clickableImage.sprite = flagImage;
+            clickableImage.HighlightColor = PointValue >= 5
+                ? Color.yellow
+                : Color.red;
         }
 
         [UIAction("#post-parse")]
@@ -417,13 +383,10 @@ namespace OCanada.UI
         [UIAction("flag-clicked")]
         private void FlagClicked()
         {
-            if (flagImage != null)
-            {
-                int pointValue = PointValue;
-                flagImage = null;
-                clickableImage.sprite = Utilities.ImageResources.BlankSprite;
-                FlagClickedEvent?.Invoke(pointValue);
-            }
+            int pointValue = PointValue;
+            PointValue = 0;
+            clickableImage.sprite = Utilities.ImageResources.BlankSprite;
+            FlagClickedEvent?.Invoke(pointValue);
         }
     }
 }
