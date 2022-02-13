@@ -245,11 +245,12 @@ namespace OCanada.UI
             {
                 flagIndex = random.Next(Flags.Points.Count);
             }
+            
+            var flag = Flags.Points.ElementAt(flagIndex);
 
-            var (name, pointValue) = Flags.Points.ElementAt(flagIndex);
-            var flagSprite = FlagLoader.GetSprite(name);
+            var flagSprite = FlagLoader.GetSprite(flag.Key);
 
-            imageList[imageIndex].SetImage(flagSprite, pointValue);
+            imageList[imageIndex].SetImage(flagSprite, flag.Value);
         }
 
         private void ClearFlags()
