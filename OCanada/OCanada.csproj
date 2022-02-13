@@ -124,6 +124,7 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\ViewControllers\ClickableFlag.cs" />
     <Compile Include="UI\ViewControllers\OCanadaAuthorModalController.cs" />
     <Compile Include="UI\ViewControllers\OCanadaResultsScreenController.cs" />
     <Compile Include="UI\ViewControllers\OCanadaDetailsController.cs" />
