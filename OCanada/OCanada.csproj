@@ -141,9 +141,6 @@
     <EmbeddedResource Include="UI\Views\OCanadaGame.bsml" />
     <EmbeddedResource Include="UI\Views\OCanadaDetails.bsml" />
     <EmbeddedResource Include="UI\Views\OCanadaPauseMenu.bsml" />
-    <EmbeddedResource Include="UI\ViewControllers\OCanadaPauseMenuController.bsml">
-      <DependentUpon>OCanadaPauseMenuController.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\Views\OCanadaResultsScreen.bsml" />
     <EmbeddedResource Include="UI\Views\OCanadaAuthorModal.bsml" />
   </ItemGroup>
