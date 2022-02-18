@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using IPA.Utilities;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace OCanada.GameplaySetupScene
@@ -13,14 +14,11 @@ namespace OCanada.GameplaySetupScene
         private readonly AudioClipAsyncLoader audioClipAsyncLoader;
         private readonly SongPreviewPlayer songPreviewPlayer;
         private AudioSource audioSource;
+        private readonly FileInfo noteAudioFile;
         
-        private static readonly DirectoryInfo RootDir = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, nameof(OCanada)));
-        
-        private static readonly DirectoryInfo NoteDir = new DirectoryInfo(Path.Combine(RootDir.ToString(), "notes"));
-        
-        private readonly FileInfo NoteAudioFile;
+        private static readonly DirectoryInfo RootDir = new DirectoryInfo(UnityGame.UserDataPath);
 
-        private bool ShouldInitialize() => !RootDir.Exists || !NoteDir.Exists || NoteDir.GetFiles().Length <= 0;
+        private static readonly string FileName = "OCanadaHitSound.ogg";
         public event Action ClipFinishedEvent;
 
         public AudioPlayer(AudioClipAsyncLoader audioClipAsyncLoader, SongPreviewPlayer songPreviewPlayer)
@@ -28,11 +26,11 @@ namespace OCanada.GameplaySetupScene
             this.audioClipAsyncLoader = audioClipAsyncLoader;
             this.songPreviewPlayer = songPreviewPlayer;
             
-            if (ShouldInitialize()) Initialize();
-            NoteAudioFile = NoteDir.GetFiles()[0];
+            Initialize();
+            noteAudioFile = RootDir.GetFiles(FileName)[0];
         }
 
-        public void PlayNote(string note) => PlayClip(NoteAudioFile, Notes.NotePitches[note]/440f);
+        public void PlayNote(string note) => PlayClip(noteAudioFile, Notes.NotePitches[note]/440f);
 
         private async void PlayClip(FileInfo audioFile, float pitch = 1f, bool notifyFinished = false)
         {
@@ -56,34 +54,17 @@ namespace OCanada.GameplaySetupScene
 
         private void Initialize()
         {
-            if (!RootDir.Exists || !NoteDir.Exists)
+            if (RootDir.GetFiles(FileName).Length > 0) return;
+            
+            var manifestStream = Assembly.
+                GetExecutingAssembly()
+                .GetManifestResourceStream("OCanada.CustomSounds.a4.ogg");
+            if (manifestStream != null)
             {
-                Directory.CreateDirectory(Path.Combine(UnityGame.UserDataPath, nameof(OCanada)));
-                RootDir.Refresh();
+                var fs = File.Create(Path.Combine(RootDir.ToString(), FileName));
+                manifestStream.CopyTo(fs);
             }
-
-            if (!NoteDir.Exists)
-            {
-                Directory.CreateDirectory(Path.Combine(RootDir.ToString(), "notes"));
-                NoteDir.Refresh();
-            }
-
-            if (NoteDir.GetFiles().Length <= 0)
-            {
-                var manifestStream = Assembly.
-                    GetExecutingAssembly()
-                    .GetManifestResourceStream("OCanada.CustomSounds.a4.ogg");
-                if (manifestStream != null)
-                {
-                    var fs = File.Create(Path.Combine(NoteDir.ToString(), "a4.ogg"));
-                    manifestStream.CopyTo(fs);
-                }
-                else
-                {
-                    Plugin.Log.Debug(Assembly.GetExecutingAssembly().ToString());
-                }
-            }
-            NoteDir.Refresh();
+            RootDir.Refresh();
         }
     }
 }
