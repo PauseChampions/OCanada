@@ -36,7 +36,7 @@ namespace OCanada
             Instance = this;
             Plugin.Log = logger;
             Plugin.Log?.Debug("Logger initialized.");
-            zenjector.OnMenu<OCanadaMenuInstaller>();
+            zenjector.Install<OCanadaMenuInstaller>(Location.Menu);
         }
 
         #region BSIPA Config

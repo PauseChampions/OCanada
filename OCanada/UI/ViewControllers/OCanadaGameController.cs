@@ -5,10 +5,9 @@ using System.Linq;
 using System.Reflection;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Components;
-using HMUI;
-using IPA.Utilities;
 using OCanada.Configuration;
+using OCanada.GameplaySetupScene;
+using OCanada.Flag;
 using UnityEngine;
 using Zenject;
 
@@ -32,6 +31,10 @@ namespace OCanada.UI
         public event Action<Mode, int> GameExit;
         private string _userName;
         private IPlatformUserModel platformUserModel;
+
+        private AudioPlayer audioPlayer;
+        private string[] oCanadaNotes;
+        private int currentNote;
 
         private int _score;
         private int _timer;
@@ -104,23 +107,25 @@ namespace OCanada.UI
                 {
                     return $"High Score: {PluginConfig.Instance.HighScoreStandard}";
                 }
-                else if (selectedMode == Mode.Endless)
+
+                if (selectedMode == Mode.Endless)
                 {
                     return $"High Score: {PluginConfig.Instance.HighScoreEndless}";
                 }
-                else
-                {
-                    return "uh oh";
-                }
+
+                return "uh oh";
             }
         }
         
         [Inject]
-        public void Construct(GameplaySetupViewController gameplaySetupViewController, OCanadaPauseMenuController oCanadaPauseMenuController, IPlatformUserModel platformUserModel)
+        public void Construct(GameplaySetupViewController gameplaySetupViewController, OCanadaPauseMenuController oCanadaPauseMenuController, IPlatformUserModel platformUserModel, AudioPlayer audioPlayer)
         {
             this.gameplaySetupViewController = gameplaySetupViewController;
             this.oCanadaPauseMenuController = oCanadaPauseMenuController;
             this.platformUserModel = platformUserModel;
+            this.audioPlayer = audioPlayer;
+            oCanadaNotes = Notes.OCanadaNotes;
+            currentNote = 0;
         }
 
         public void Initialize()
@@ -137,11 +142,6 @@ namespace OCanada.UI
             currentTimeSeconds = 0;
             Timer = 0;
             random = new System.Random();
-
-            foreach (var flagImage in Flags.FlagList)
-            {
-                _ = flagImage.Sprite;
-            }
 
             gameplaySetupViewController.didDeactivateEvent += GameplaySetupViewController_didDeactivateEvent;
             oCanadaPauseMenuController.ResumeClicked += ResumeGame;
@@ -237,14 +237,20 @@ namespace OCanada.UI
         private void SpawnFlag()
         {
             List<ClickableFlag> imageList = clickableImages.OfType<ClickableFlag>().ToList();
-            int canadianFlag = random.Next(1, 6);
             int imageIndex = random.Next(imageList.Count);
-            int flagIndex = 0;
-            if (canadianFlag != 5)
+            
+            int flagIndex = 0; // Def to 0 because this is where Canadian flag is
+            int canadianFlag = random.Next(1, 6);
+            if (canadianFlag != 5) // 1/5 chance of Canadian Flag spawn
             {
-                flagIndex = random.Next(Flags.FlagList.Count);
+                flagIndex = random.Next(Flags.Points.Count);
             }
-            imageList[imageIndex].SetImage(Flags.FlagList[flagIndex]);
+            
+            var flag = Flags.Points.ElementAt(flagIndex);
+
+            var flagSprite = FlagLoader.GetSprite(flag.Key);
+
+            imageList[imageIndex].SetImage(flagSprite, flag.Value);
         }
 
         private void ClearFlags()
@@ -264,6 +270,12 @@ namespace OCanada.UI
                 ExitGame();
             }
 
+            if (pointValue > 0)
+            {
+                audioPlayer.PlayNote(oCanadaNotes[currentNote % oCanadaNotes.Length]);
+                currentNote++;
+            }
+
             if (selectedMode == Mode.Endless)
             {
                 Timer += Mathf.CeilToInt(pointValue / 2);
@@ -274,12 +286,12 @@ namespace OCanada.UI
             }
 
             bool respawn = true;
-
             foreach (var clickableFlag in clickableImages.OfType<ClickableFlag>())
             {
                 if (clickableFlag.PointValue > 0)
                 {
                     respawn = false;
+                    break;
                 }
             }
 
@@ -327,6 +339,7 @@ namespace OCanada.UI
                     PluginConfig.Instance.HighScoreEndless = Score > PluginConfig.Instance.HighScoreEndless ? Score : PluginConfig.Instance.HighScoreEndless;
                 }
 
+                currentNote = 0;
                 GameExit?.Invoke(selectedMode, Score);
             }
         }
@@ -334,81 +347,6 @@ namespace OCanada.UI
         private void GameplaySetupViewController_didDeactivateEvent(bool removedFromHierarchy, bool screenSystemDisabling)
         {
             ExitGame();
-        }
-    }
-
-    internal class ClickableFlag
-    {
-        [UIComponent("clickable-image")]
-        private ClickableImage clickableImage;
-
-        private FlagImage flagImage;
-        internal event Action<int> FlagClickedEvent;
-        internal int PointValue => flagImage != null ? flagImage.PointValue : 0;
-
-        internal void SetImage(FlagImage flagImage)
-        {
-            if (this.flagImage != null)
-            {
-                this.flagImage.SpriteLoaded -= FlagImage_SpriteLoaded;
-            }
-
-            if (flagImage != null)
-            {
-                if (flagImage.SpriteWasLoaded)
-                {
-                    clickableImage.sprite = flagImage.Sprite;
-                    this.flagImage = flagImage;
-                }
-                else
-                {
-                    this.flagImage = null;
-                    flagImage.SpriteLoaded += FlagImage_SpriteLoaded;
-                    _ = flagImage.Sprite;
-                }
-
-                if (flagImage.PointValue >= 5)
-                {
-                    clickableImage.HighlightColor = Color.yellow;
-                }
-                else
-                {
-                    clickableImage.HighlightColor = Color.red;
-                }
-            }
-            else
-            {
-                clickableImage.sprite = Utilities.ImageResources.BlankSprite;
-                this.flagImage = null;
-            }
-        }
-
-        private void FlagImage_SpriteLoaded(object sender, System.EventArgs e)
-        {
-            if (sender is FlagImage flagImage)
-            {
-                this.flagImage = flagImage;
-                clickableImage.sprite = flagImage.Sprite;
-                flagImage.SpriteLoaded -= FlagImage_SpriteLoaded;
-            }
-        }
-
-        [UIAction("#post-parse")]
-        private void PostParse()
-        {
-            FieldAccessor<ImageView, float>.Set(clickableImage, "_skew", 0);
-        }
-
-        [UIAction("flag-clicked")]
-        private void FlagClicked()
-        {
-            if (flagImage != null)
-            {
-                int pointValue = PointValue;
-                flagImage = null;
-                clickableImage.sprite = Utilities.ImageResources.BlankSprite;
-                FlagClickedEvent?.Invoke(pointValue);
-            }
         }
     }
 }
